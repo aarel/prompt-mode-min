@@ -1,0 +1,17 @@
+{
+  "dimensions": {
+    "coverage": {
+      "description": "Does the answer address the full user request?",
+      "weight": 0.4
+    },
+    "clarity": {
+      "description": "Is the answer concise, structured, and easy to read?",
+      "weight": 0.3
+    },
+    "constraints": {
+      "description": "Does the answer respect explicit instructions or limits?",
+      "weight": 0.3
+    }
+  },
+  "scoring_notes": "Each dimension scored 0.0–1.0. Weighted average produces overall score."
+}

@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prompt-mode-min"
+version = "0.1.0"
+description = "Minimal, readable demos of Prompt Mode v1 (single self-critique) and v2 (plan + multi-pass critique) for LLM prompting."
+readme = "README.md"
+authors = [
+    { name = "Adam Arellano" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.0,<3.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.5.0",
+    "pytest-socket>=0.6.0"  # blocks network calls in tests
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+lint.select = [
+    "E",  # pycodestyle errors
+    "F",  # pyflakes
+    "I",  # isort
+]
+lint.ignore = [
+    "E501",  # line too long (let black/formatter handle)
+]
+format.quote-style = "double"
+format.indent-style = "space"
+
+[tool.pytest.ini_options]
+addopts = "-q --disable-warnings"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/prompt_mode"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

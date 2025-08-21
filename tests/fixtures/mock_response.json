@@ -1,0 +1,11 @@
+{
+  "email_tone_fix": {
+    "input": "Please rewrite this email to be more polite and professional.",
+    "draft": "[MOCK] Revised Email (concise, professional):\n\nSubject: Follow-up on your request\n\nHi [Name],\n\nThanks for the update. Here’s the plan:\n• I’ll review the document and confirm next steps by EOD tomorrow.\n• If priorities changed, let me know and I’ll adjust.\n\nBest,\n[Your Name]\n"
+  },
+  "sql_query_review": {
+    "input": "SELECT * FROM users JOIN orders;",
+    "critique": "[MOCK] Critique\n- Coverage: 0.72 — Does it answer the full ask?\n- Clarity: 0.81 — Is the structure concise and readable?\n- Constraints: 0.66 — Adheres to explicit constraints?\n**Overall**: 0.73\nImprovements:\n1) Tighten wording; remove filler.\n2) Ensure all constraints are addressed explicitly.\n3) Add a short rationale before the final.\n",
+    "revision": "[MOCK] SQL Review\nFindings:\n- Avoid SELECT *; project only required columns.\n- JOIN without ON clause risks a Cartesian product.\n\nSuggested Query:\n```sql\nSELECT u.id, u.email, COUNT(o.id) AS orders\nFROM users u\nLEFT JOIN orders o ON o.user_id = u.id\nWHERE u.created_at >= DATE '2024-01-01'\nGROUP BY u.id, u.email\nORDER BY orders DESC;\n```\nRationale:\n- Projects specific columns for readability/perf.\n- LEFT JOIN with explicit ON prevents unintended row explosion.\n- WHERE bound keeps scans reasonable; GROUP BY matches projections.\n"
+  }
+}

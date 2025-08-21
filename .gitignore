@@ -1,0 +1,42 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test / coverage outputs
+.coverage
+htmlcov/
+.cache/
+.pytest_cache/
+.tox/
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+
+# Editor cruft
+*.swp
+*.swo
+*.DS_Store
+.idea/
+.vscode/
+
+# Logs and transcripts
+*.log
+*.jsonl
+*.out
+
+# Local experiments / temp
+tmp/
+scratch/

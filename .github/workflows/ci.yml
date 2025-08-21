@@ -1,0 +1,84 @@
+# .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "**.py"
+      - "pyproject.toml"
+      - ".github/workflows/ci.yml"
+      - "README.md"
+      - "tests/**"
+      - "src/**"
+  pull_request:
+    paths:
+      - "**.py"
+      - "pyproject.toml"
+      - ".github/workflows/ci.yml"
+      - "README.md"
+      - "tests/**"
+      - "src/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      # Tests should use the deterministic LocalMock. Make your code & tests respect this flag.
+      PM_FORCE_MOCK: "1"
+      # If your test suite checks this to disable any HTTP client init, it will catch mistakes early.
+      NO_NETWORK: "1"
+      # Make warnings loud in CI; failing on them is optional but recommended once things stabilize.
+      PYTHONWARNINGS: "default"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Expect dev extras in pyproject: pytest, ruff, pytest-cov, pytest-socket (or similar)
+          pip install -e .[dev]
+
+      - name: Lint (ruff)
+        run: |
+          ruff check .
+          # Keep format check separate so messages are clear
+          ruff format --check .
+
+      # OPTIONAL but strong: block outbound network before tests.
+      # This protects you from accidental real-LLM calls or telemetry in CI.
+      - name: Block outbound network
+        run: |
+          sudo iptables -P OUTPUT DROP
+          # Allow loopback so Python can operate normally
+          sudo iptables -A OUTPUT -o lo -j ACCEPT
+          # Allow DNS resolution OFF (safer). If you need it for something non-test, enable selectively.
+
+      - name: Run tests
+        run: |
+          # If using pytest-socket, this will hard-fail any network call even if iptables changes in runners.
+          # In your tests, you can also include a session-scoped fixture: disable_socket()
+          pytest -q --maxfail=1 --disable-warnings --cov=prompt_mode --cov-report=xml
+
+      - name: Upload coverage (artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml

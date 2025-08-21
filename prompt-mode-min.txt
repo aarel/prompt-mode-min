@@ -1,0 +1,38 @@
+prompt-mode-min/
+├─ README.md
+├─ LICENSE
+├─ pyproject.toml
+├─ .gitignore
+├─ src/
+│  ├─ prompt_mode/
+│  │  ├─ __init__.py
+│  │  ├─ core.py                # PromptModeV1/V2 orchestrators (clean, dependency-light)
+│  │  ├─ schemas.py             # Pydantic dataclasses for configs, passes, artifacts
+│  │  ├─ llm.py                 # Tiny “LLM interface” + adapters: OpenAI & a LocalMock
+│  │  ├─ prompts/
+│  │  │  ├─ system_v1.txt       # system prompt for V1 (single self-critique)
+│  │  │  ├─ system_v2.txt       # system prompt for V2 (multi-pass planner + critic)
+│  │  │  ├─ critic_guidelines.txt
+│  │  │  └─ rubric_example.json # small rubric used in demos/evals
+│  │  └─ utils.py               # token counting, truncation, simple sanitizers
+│  └─ cli.py                    # `python -m prompt_mode` demo CLI
+├─ examples/
+│  ├─ tasks/
+│  │  ├─ email_tone_fix.md
+│  │  ├─ sql_query_review.md
+│  │  └─ bug_report_summarize.md
+│  └─ transcripts/
+│     ├─ v1_email.jsonl         # saved runs: inputs, passes, deltas (for honesty)
+│     └─ v2_sql.jsonl
+├─ tests/
+│  ├─ test_core.py              # unit tests for pass orchestration
+│  ├─ test_llm_mock.py          # deterministic LocalMock tests (no network)
+│  ├─ test_cli_smoke.py         # runs CLI w/ mock and asserts artifacts created
+│  └─ fixtures/
+│     └─ mock_responses.json    # golden outputs for regression tests
+├─ evals/
+│  ├─ small_eval_set.jsonl      # 8–12 tiny tasks (resume-worthy, not hype)
+│  └─ run_eval.py               # keyword/rubric scoring; produces a CSV
+└─ .github/
+   └─ workflows/
+      └─ ci.yml                 # lint + tests; fail on network calls during CI
